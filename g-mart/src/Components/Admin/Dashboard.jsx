@@ -70,7 +70,8 @@ const Dashboard = () => {
     };
   }, []);
   useEffect(() => {
-    axiosClient(`/user/${userId}/city`)
+    axiosClient
+      .get(`/user-order-details`)
       .then((response) => {
         setCityData(response.data);
       })
@@ -81,7 +82,7 @@ const Dashboard = () => {
 
   console.log(cityData);
   if (loading) {
-    return <h4>Loading User Profile...</h4>;
+    return <h4>Loading Dashboard...</h4>;
   }
   let displayOrders = "";
   if (loading) {
@@ -92,13 +93,13 @@ const Dashboard = () => {
       orders.map((item) => {
         return (
           <tr key={item.id}>
-            <td>{item.id}</td>
-            <td>{item.tracking_no}</td>
-            <td>{item.phone}</td>
-            <td>{item.user_id}</td>
+            <td className="border">{item.id}</td>
+            <td className="border">{item.tracking_no}</td>
+            <td className="border">{item.phone}</td>
+            <td className="border">{item.user_id}</td>
 
-            <td>{item.email}</td>
-            <td>{item.payment_mode}</td>
+            <td className="border">{item.email}</td>
+            <td className="border">{item.payment_mode}</td>
             <td>
               <Link
                 to={`/dashboard/view-order/${item.id}`}
@@ -123,14 +124,19 @@ const Dashboard = () => {
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div className="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
               <h2 className="text-2xl font-semibold mb-4">City Data</h2>
-              <ul>
-                {cityData.map((city, index) => (
-                  <li key={index} className="text-lg">
-                    {city}
-                  </li>
-                ))}
-              </ul>
+              {Array.isArray(cityData) ? (
+                <ul>
+                  {cityData.map((city, index) => (
+                    <li key={index} className="text-lg">
+                      {city}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No city data available.</p>
+              )}
             </div>
+
             <div className="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
               <h1>User Profile</h1>
               <p>Name: {user.name}</p>
@@ -152,17 +158,31 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="flex items-center justify-center h-48 mb-4 rounded bg-gray-50 dark:bg-gray-800">
-            <div className="text-2xl text-gray-400 dark:text-gray-500 overflow-x-auto w-full">
+            <div className="w-full overflow-x-auto">
               <table className="table-auto border-collapse border border-gray-300 w-full">
                 <thead>
-                  <tr>
-                    <th className="px-4 py-2 bg-gray-100">ID</th>
-                    <th className="px-4 py-2 bg-gray-100">Tracking No.</th>
-                    <th className="px-4 py-2 bg-gray-100">Phone No.</th>
-                    <th className="px-4 py-2 bg-gray-100">User Id</th>
-                    <th className="px-4 py-2 bg-gray-100">Email</th>
-                    <th className="px-4 py-2 bg-gray-100">Payment Mode</th>
-                    <th className="px-4 py-2 bg-gray-100">Action</th>
+                  <tr className="bg-gray-200 dark:bg-gray-700">
+                    <th className="px-4 py-2 bg-gray-300 border-separate">
+                      ID
+                    </th>
+                    <th className="px-4 py-2  bg-gray-300 border">
+                      Tracking No.
+                    </th>
+                    <th className="px-4 py-2  bg-gray-300 border-separate">
+                      Phone No.
+                    </th>
+                    <th className="px-4 py-2  bg-gray-300 border-separate">
+                      User Id
+                    </th>
+                    <th className="px-4 py-2  bg-gray-300 border-separate">
+                      Email
+                    </th>
+                    <th className="px-4 py-2  bg-gray-300 border-separate">
+                      Payment Mode
+                    </th>
+                    <th className="px-4 py-2  bg-gray-300 border-separate">
+                      Action
+                    </th>
                   </tr>
                 </thead>
                 <tbody>{displayOrders}</tbody>
