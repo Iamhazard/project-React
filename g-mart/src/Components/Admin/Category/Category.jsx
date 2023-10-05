@@ -12,18 +12,53 @@ const Category = () => {
   const navigate = useNavigate();
   const [picture, setPicture] = useState([]);
   const [errorlist, setError] = useState([]);
-
+  const [nameError, setNameError] = useState("");
+  const [imageError, setImageError] = useState("");
+  console.log(errorlist);
   const handleNavigation = () => {
     navigate("/dashboard/Category/view-category");
   };
+
+  const validateName = (name) => {
+    if (!name) {
+      return "Name is required";
+    }
+
+    return "";
+  };
+  const validateImage = (file) => {
+    if (!file) {
+      return "Image is required";
+    }
+
+    if (!/^image\/(jpeg|png)$/.test(file.type)) {
+      return "Please select a valid image (JPEG or PNG)";
+    }
+
+    const maxSizeInBytes = 2 * 1024 * 1024;
+    if (file.size > maxSizeInBytes) {
+      return "Image size exceeds the maximum allowed size (2MB)";
+    }
+
+    return "";
+  };
+
   const handleInput = (e) => {
     e.persist();
-    setCategory({ ...categoryInput, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setCategory({ ...categoryInput, [name]: value });
+
+    if (name === "name") {
+      const error = validateName(value);
+      setNameError(error);
+    }
   };
 
   const handleImage = (e) => {
-    //setPicture(e.target.files[0]);
+    const file = e.target.files[0];
     setPicture(e.target.files[0]);
+    const error = validateImage(file);
+    setImageError(error);
     // e.target.value = "";
 
     // console.log({ image: e.target.files[0] });
@@ -50,6 +85,7 @@ const Category = () => {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
+        console.log("Server Response:", res);
         if (res.data.status === 200) {
           e.target.reset();
           alert("Success", res.data.message, "success");
@@ -75,9 +111,9 @@ const Category = () => {
   return (
     <>
       <header className="bg-white shadow">
-        {display_errors.map((item) => {
+        {display_errors.map((item, index) => {
           return (
-            <p className="mb-1" key={item}>
+            <p className="mb-1" key={index}>
               {item}
             </p>
           );
@@ -112,7 +148,7 @@ const Category = () => {
                       className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                       placeholder="Enter name"
                     />
-                    <small className="text-danger">{errorlist.name}</small>
+                    <small className="text-red-500">{nameError}</small>
                   </div>
                   {categoryInput.error_list && (
                     <span className="text-red-500">
@@ -134,7 +170,7 @@ const Category = () => {
                     name="image"
                     onChange={handleImage}
                   />
-                  <small className="text-danger">{errorlist.image}</small>
+                  <small className="text-red-500">{imageError}</small>
                   <p
                     className="mt-1 text-sm text-gray-500 dark:text-gray-300"
                     id="file_input_help">

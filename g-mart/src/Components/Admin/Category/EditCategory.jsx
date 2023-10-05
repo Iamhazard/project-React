@@ -41,7 +41,7 @@ const EditCategory = () => {
     const formData = new FormData();
     formData.append("image", picture);
 
-    axiosClient.put(`/update-category`, formData, data).then((res) => {
+    axiosClient.post(`/update-category ${id}`, formData, data).then((res) => {
       if (res.data.status === 200) {
         alert("Success", res.data.message, "success");
         setError([]);

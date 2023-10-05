@@ -107,15 +107,20 @@ const Register = () => {
             {...register("email", {
               required: "Please Enter Your Email!",
               pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
                 message: "Please Enter A Valid Email!",
               },
             })}
             placeholder="Email"
           />
+          {/* {errors.email && (
+            <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+          )} */}
+
           <span className="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">
             {errors?.email && errors.email.message}
           </span>
+
           {/* <p>Current email value: {emailValue}</p> */}
           <input
             type="password"
@@ -127,9 +132,19 @@ const Register = () => {
                 value: 8,
                 message: "Password must be at least 8 characters long!",
               },
+              pattern: {
+                value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/,
+                message:
+                  "Password must contain at least one lowercase letter, one uppercase letter, and one number.",
+              },
             })}
             placeholder="Password"
           />
+          {errors.password && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.password.message}
+            </p>
+          )}
           <span className="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">
             {errors?.confirm_password && errors.confirm_password.message}
           </span>
